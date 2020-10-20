@@ -1,1 +1,1 @@
-- Added boost spamming config option
+- Added german language

@@ -1,0 +1,7 @@
+{
+  "item.reusable_rockets.reusable_rocket_tier_1": "Wiederverwendbare Rakete Stufe 1",
+  "item.reusable_rockets.reusable_rocket_tier_2": "Wiederverwendbare Rakete Stufe 2",
+  "item.reusable_rockets.reusable_rocket_tier_3": "Wiederverwendbare Rakete Stufe 3",
+  "tooltip.reusable_rockets.sneak_to_change": "<SCHLEICHEN> + <BENUTZEN> um die Flugdauer zu ändern",
+  "message.reusable_rockets.set_flight_duration": "Flugdauer auf %s von %s gesetzt"
+}
