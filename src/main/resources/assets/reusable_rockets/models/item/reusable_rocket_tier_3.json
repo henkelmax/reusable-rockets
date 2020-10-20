@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "reusable_rockets:item/reusable_rocket_tier_3"
+    }
+}

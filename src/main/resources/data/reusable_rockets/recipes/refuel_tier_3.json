@@ -1,0 +1,9 @@
+{
+  "type": "reusable_rockets:refuel",
+  "rocket": {
+    "item": "reusable_rockets:reusable_rocket_tier_3"
+  },
+  "fuel": {
+    "tag": "reusable_rockets:rocket_fuel"
+  }
+}
