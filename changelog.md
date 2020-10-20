@@ -1,0 +1,1 @@
+- Added boost spamming config option

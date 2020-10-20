@@ -2,6 +2,7 @@ package de.maxhenkel.rockets.item;
 
 import de.maxhenkel.rockets.Main;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.item.Item;
@@ -17,6 +18,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.List;
 
@@ -44,15 +46,18 @@ public class ItemReusableRocket extends Item {
             player.playSound(SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF, 1F, 1F);
             return ActionResult.func_233538_a_(player.getHeldItem(hand), world.isRemote());
         } else if (player.isElytraFlying() && stack.getDamage() < stack.getMaxDamage()) {
+            if (!Main.SERVER_CONFIG.allowRocketSpamming.get() && isGettingBoosted(player)) {
+                return ActionResult.resultFail(player.getHeldItem(hand));
+            }
             if (!world.isRemote) {
                 int duration = Math.min(getFlightDuration(stack), stack.getMaxDamage() - stack.getDamage());
                 world.addEntity(new FireworkRocketEntity(world, createDummyFirework((byte) duration), player));
                 stack.setDamage(Math.min(stack.getMaxDamage(), stack.getDamage() + duration));
             }
             return ActionResult.func_233538_a_(player.getHeldItem(hand), world.isRemote());
-        } else {
-            return ActionResult.resultPass(player.getHeldItem(hand));
         }
+        return ActionResult.resultFail(player.getHeldItem(hand));
+
     }
 
     protected byte getFlightDuration(ItemStack stack) {
@@ -84,6 +89,17 @@ public class ItemReusableRocket extends Item {
         ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
         stack.getOrCreateChildTag("Fireworks").putByte("Flight", flightDuration);
         return stack;
+    }
+
+    public boolean isGettingBoosted(PlayerEntity player) {
+        return player.world.getEntitiesWithinAABB(FireworkRocketEntity.class, player.getBoundingBox().grow(2D), rocket -> {
+            LivingEntity entity = null;
+            try {
+                entity = ObfuscationReflectionHelper.getPrivateValue(FireworkRocketEntity.class, rocket, "field_191513_e");
+            } catch (Exception e) {
+            }
+            return entity == player;
+        }).stream().findAny().isPresent();
     }
 
 }
