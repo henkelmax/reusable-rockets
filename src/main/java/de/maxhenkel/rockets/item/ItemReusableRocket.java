@@ -80,8 +80,8 @@ public class ItemReusableRocket extends Item {
 
     @Override
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add((new TranslationTextComponent("item.minecraft.firework_rocket.flight")).func_240702_b_(" ").func_240702_b_(String.valueOf(getFlightDuration(stack))).func_240699_a_(TextFormatting.GRAY));
-        tooltip.add((new TranslationTextComponent("tooltip.reusable_rockets.sneak_to_change")).func_240699_a_(TextFormatting.GRAY));
+        tooltip.add((new TranslationTextComponent("item.minecraft.firework_rocket.flight")).appendString(" ").appendString(String.valueOf(getFlightDuration(stack))).mergeStyle(TextFormatting.GRAY));
+        tooltip.add((new TranslationTextComponent("tooltip.reusable_rockets.sneak_to_change")).mergeStyle(TextFormatting.GRAY));
         super.addInformation(stack, world, tooltip, flag);
     }
 
