@@ -3,13 +3,14 @@ package de.maxhenkel.rockets.integration.jei;
 import de.maxhenkel.rockets.Main;
 import de.maxhenkel.rockets.recipe.RefuelRecipe;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.category.extensions.IExtendableRecipeCategory;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.util.ResourceLocation;
 
-@mezz.jei.api.JeiPlugin
+@JeiPlugin
 public class JEIPlugin implements IModPlugin {
 
     @Override
