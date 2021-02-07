@@ -1,1 +1,1 @@
-- Re-added JEI compatibility
+- Added configurable durations and uses

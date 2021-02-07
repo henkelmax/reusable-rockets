@@ -1,5 +1,6 @@
 package de.maxhenkel.rockets.integration.jei;
 
+import de.maxhenkel.rockets.item.ItemReusableRocket;
 import de.maxhenkel.rockets.recipe.RefuelRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -25,16 +26,21 @@ public class RefuelExtension<T extends RefuelRecipe> implements ICustomCraftingC
         IGuiItemStackGroup guiItemStacks = layout.getItemStacks();
 
         ItemStack in = recipe.getRocket().copy();
-        in.setDamage(in.getMaxDamage() / 2);
+        if (!(in.getItem() instanceof ItemReusableRocket)) {
+            return;
+        }
+        ItemReusableRocket rocket = (ItemReusableRocket) in.getItem();
+        rocket.setUsesLeft(in, rocket.getMaxUses() / 2);
 
         ItemStack out = in.copy();
-        out.setDamage(Math.max(0, out.getDamage() - 8));
+        rocket.setUsesLeft(out, Math.min(rocket.getUsesLeft(in) + 8, rocket.getMaxUses()));
 
         List<ItemStack> fuels = Arrays.asList(recipe.getFuel().getMatchingStacks());
+        List<ItemStack> fuels2 = Arrays.asList(recipe.getFuel().getMatchingStacks());
 
         guiItemStacks.set(0, out);
         guiItemStacks.set(1, fuels);
-        guiItemStacks.set(2, fuels);
+        guiItemStacks.set(2, fuels2);
         guiItemStacks.set(3, fuels);
         guiItemStacks.set(4, fuels);
         guiItemStacks.set(5, in);

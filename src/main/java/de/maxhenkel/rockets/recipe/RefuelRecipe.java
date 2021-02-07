@@ -141,13 +141,21 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
             }
         }
 
-        if (rocket == null || gunpowderSlotIndices.size() <= 0 || rocket.getDamage() <= 0) {
+        if (rocket == null) {
+            return null;
+        }
+
+        ItemReusableRocket r = (ItemReusableRocket) rocket.getItem();
+        int usesLeft = r.getUsesLeft(rocket);
+        int maxUses = r.getMaxUses();
+
+        if (gunpowderSlotIndices.size() <= 0 || usesLeft >= maxUses) {
             return null;
         }
 
         ItemStack rocketOut = rocket.copy();
 
-        int count = Math.min(rocketOut.getDamage(), gunpowderSlotIndices.size());
+        int count = Math.min(maxUses - usesLeft, gunpowderSlotIndices.size());
 
         NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
@@ -164,7 +172,8 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
             }
         }
 
-        rocketOut.setDamage(rocketOut.getDamage() - count);
+
+        r.setUsesLeft(rocketOut, usesLeft + count);
 
         return new CraftingResult(rocketOut, remaining);
     }

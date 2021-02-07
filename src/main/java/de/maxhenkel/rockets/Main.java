@@ -29,9 +29,9 @@ public class Main {
 
     public static RefuelRecipe.RecipeRefuelSerializer CRAFTING_REFUEL;
 
-    public static final ItemReusableRocket REUSABLE_ROCKET_TIER_1 = new ItemReusableRocket("reusable_rocket_tier_1", 32, 2);
-    public static final ItemReusableRocket REUSABLE_ROCKET_TIER_2 = new ItemReusableRocket("reusable_rocket_tier_2", 64, 4);
-    public static final ItemReusableRocket REUSABLE_ROCKET_TIER_3 = new ItemReusableRocket("reusable_rocket_tier_3", 128, 6);
+    public static ItemReusableRocket REUSABLE_ROCKET_TIER_1;
+    public static ItemReusableRocket REUSABLE_ROCKET_TIER_2;
+    public static ItemReusableRocket REUSABLE_ROCKET_TIER_3;
 
     public static ITag<Item> ROCKET_FUEL = ItemTags.makeWrapperTag(new ResourceLocation(Main.MODID, "rocket_fuel").toString());
 
@@ -73,6 +73,9 @@ public class Main {
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
+        REUSABLE_ROCKET_TIER_1 = new ItemReusableRocket("reusable_rocket_tier_1", SERVER_CONFIG.tier1MaxUses::get, SERVER_CONFIG.tier1MaxDuration::get);
+        REUSABLE_ROCKET_TIER_2 = new ItemReusableRocket("reusable_rocket_tier_2", SERVER_CONFIG.tier2MaxUses::get, SERVER_CONFIG.tier2MaxDuration::get);
+        REUSABLE_ROCKET_TIER_3 = new ItemReusableRocket("reusable_rocket_tier_3", SERVER_CONFIG.tier3MaxUses::get, SERVER_CONFIG.tier3MaxDuration::get);
         event.getRegistry().registerAll(
                 REUSABLE_ROCKET_TIER_1,
                 REUSABLE_ROCKET_TIER_2,
