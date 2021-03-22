@@ -35,8 +35,8 @@ public class RefuelExtension<T extends RefuelRecipe> implements ICustomCraftingC
         ItemStack out = in.copy();
         rocket.setUsesLeft(out, Math.min(rocket.getUsesLeft(in) + 8, rocket.getMaxUses()));
 
-        List<ItemStack> fuels = Arrays.asList(recipe.getFuel().getMatchingStacks());
-        List<ItemStack> fuels2 = Arrays.asList(recipe.getFuel().getMatchingStacks());
+        List<ItemStack> fuels = Arrays.asList(recipe.getFuel().getItems());
+        List<ItemStack> fuels2 = Arrays.asList(recipe.getFuel().getItems());
 
         guiItemStacks.set(0, out);
         guiItemStacks.set(1, fuels);
@@ -52,7 +52,7 @@ public class RefuelExtension<T extends RefuelRecipe> implements ICustomCraftingC
 
     @Override
     public void setIngredients(IIngredients ingredients) {
-        List<ItemStack> inputs = new ArrayList<>(Arrays.asList(recipe.getFuel().getMatchingStacks()));
+        List<ItemStack> inputs = new ArrayList<>(Arrays.asList(recipe.getFuel().getItems()));
         inputs.add(recipe.getRocket());
 
         ingredients.setInputs(VanillaTypes.ITEM, inputs);

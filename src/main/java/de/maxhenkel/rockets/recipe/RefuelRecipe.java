@@ -42,7 +42,7 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(rocket), fuel);
+        return NonNullList.of(Ingredient.EMPTY, Ingredient.of(rocket), fuel);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingInventory inv) {
         CraftingResult craft = craft(inv);
         if (craft == null) {
             return null;
@@ -69,12 +69,12 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width > 1 && height > 1;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return rocket;
     }
 
@@ -103,20 +103,20 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
         }
 
         @Override
-        public RefuelRecipe read(ResourceLocation resourceLocation, JsonObject jsonObject) {
-            return new RefuelRecipe(resourceLocation, ShapedRecipe.deserializeItem(jsonObject.getAsJsonObject("rocket")), Ingredient.deserialize(jsonObject.getAsJsonObject("fuel")));
+        public RefuelRecipe fromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
+            return new RefuelRecipe(resourceLocation, ShapedRecipe.itemFromJson(jsonObject.getAsJsonObject("rocket")), Ingredient.fromJson(jsonObject.getAsJsonObject("fuel")));
         }
 
         @Override
-        public RefuelRecipe read(ResourceLocation resourceLocation, PacketBuffer packetBuffer) {
-            return new RefuelRecipe(packetBuffer.readResourceLocation(), packetBuffer.readItemStack(), Ingredient.read(packetBuffer));
+        public RefuelRecipe fromNetwork(ResourceLocation resourceLocation, PacketBuffer packetBuffer) {
+            return new RefuelRecipe(packetBuffer.readResourceLocation(), packetBuffer.readItem(), Ingredient.fromNetwork(packetBuffer));
         }
 
         @Override
-        public void write(PacketBuffer packetBuffer, RefuelRecipe recipe) {
+        public void toNetwork(PacketBuffer packetBuffer, RefuelRecipe recipe) {
             packetBuffer.writeResourceLocation(recipe.getId());
-            packetBuffer.writeItemStack(recipe.rocket);
-            recipe.fuel.write(packetBuffer);
+            packetBuffer.writeItem(recipe.rocket);
+            recipe.fuel.toNetwork(packetBuffer);
         }
     }
 
@@ -124,8 +124,8 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
         ItemStack rocket = null;
         List<Integer> gunpowderSlotIndices = new ArrayList<>();
 
-        for (int i = 0; i < inv.getSizeInventory(); i++) {
-            ItemStack stack = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack stack = inv.getItem(i);
 
             if (stack.isEmpty()) {
                 continue;
@@ -136,7 +136,7 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
                     return null;
                 }
                 rocket = stack;
-            } else if (stack.getItem().isIn(Main.ROCKET_FUEL)) {
+            } else if (stack.getItem().is(Main.ROCKET_FUEL)) {
                 gunpowderSlotIndices.add(i);
             }
         }
@@ -157,7 +157,7 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
 
         int count = Math.min(maxUses - usesLeft, gunpowderSlotIndices.size());
 
-        NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         if (count < gunpowderSlotIndices.size()) {
             int reAddCount = gunpowderSlotIndices.size() - count;
@@ -165,7 +165,7 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
                 if (reAddCount <= 0) {
                     break;
                 }
-                ItemStack gp = inv.getStackInSlot(index).copy();
+                ItemStack gp = inv.getItem(index).copy();
                 gp.setCount(1);
                 remaining.set(index, gp);
                 reAddCount--;

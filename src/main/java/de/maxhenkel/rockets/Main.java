@@ -33,7 +33,7 @@ public class Main {
     public static ItemReusableRocket REUSABLE_ROCKET_TIER_2;
     public static ItemReusableRocket REUSABLE_ROCKET_TIER_3;
 
-    public static ITag<Item> ROCKET_FUEL = ItemTags.makeWrapperTag(new ResourceLocation(Main.MODID, "rocket_fuel").toString());
+    public static ITag<Item> ROCKET_FUEL = ItemTags.bind(new ResourceLocation(Main.MODID, "rocket_fuel").toString());
 
     public Main() {
 

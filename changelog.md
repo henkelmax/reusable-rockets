@@ -1,1 +1,1 @@
-- Added configurable durations and uses
+- Updated to official mappings
