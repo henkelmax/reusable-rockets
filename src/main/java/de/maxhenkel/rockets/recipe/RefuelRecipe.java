@@ -3,22 +3,20 @@ package de.maxhenkel.rockets.recipe;
 import com.google.gson.JsonObject;
 import de.maxhenkel.rockets.Main;
 import de.maxhenkel.rockets.item.ItemReusableRocket;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.crafting.IShapedRecipe<CraftingInventory> {
+public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingContainer> {
 
     private ResourceLocation id;
     private ItemStack rocket;
@@ -46,12 +44,12 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         return craft(inv) != null;
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
         CraftingResult craft = craft(inv);
         if (craft == null) {
             return null;
@@ -60,7 +58,7 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
     }
 
     @Override
-    public ItemStack assemble(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         CraftingResult craft = craft(inv);
         if (craft == null) {
             return null;
@@ -92,11 +90,16 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Main.CRAFTING_REFUEL;
     }
 
-    public static class RecipeRefuelSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RefuelRecipe> {
+    @Override
+    public RecipeType<?> getType() {
+        return RecipeType.CRAFTING;
+    }
+
+    public static class RecipeRefuelSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RefuelRecipe> {
 
         public RecipeRefuelSerializer() {
 
@@ -104,23 +107,23 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
 
         @Override
         public RefuelRecipe fromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
-            return new RefuelRecipe(resourceLocation, ShapedRecipe.itemFromJson(jsonObject.getAsJsonObject("rocket")), Ingredient.fromJson(jsonObject.getAsJsonObject("fuel")));
+            return new RefuelRecipe(resourceLocation, ShapedRecipe.itemStackFromJson(jsonObject.getAsJsonObject("rocket")), Ingredient.fromJson(jsonObject.getAsJsonObject("fuel")));
         }
 
         @Override
-        public RefuelRecipe fromNetwork(ResourceLocation resourceLocation, PacketBuffer packetBuffer) {
+        public RefuelRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf packetBuffer) {
             return new RefuelRecipe(packetBuffer.readResourceLocation(), packetBuffer.readItem(), Ingredient.fromNetwork(packetBuffer));
         }
 
         @Override
-        public void toNetwork(PacketBuffer packetBuffer, RefuelRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf packetBuffer, RefuelRecipe recipe) {
             packetBuffer.writeResourceLocation(recipe.getId());
             packetBuffer.writeItem(recipe.rocket);
             recipe.fuel.toNetwork(packetBuffer);
         }
     }
 
-    protected CraftingResult craft(CraftingInventory inv) {
+    protected CraftingResult craft(CraftingContainer inv) {
         ItemStack rocket = null;
         List<Integer> gunpowderSlotIndices = new ArrayList<>();
 
@@ -136,7 +139,7 @@ public class RefuelRecipe implements ICraftingRecipe, net.minecraftforge.common.
                     return null;
                 }
                 rocket = stack;
-            } else if (stack.getItem().is(Main.ROCKET_FUEL)) {
+            } else if (Main.ROCKET_FUEL.contains(stack.getItem())) {
                 gunpowderSlotIndices.add(i);
             }
         }

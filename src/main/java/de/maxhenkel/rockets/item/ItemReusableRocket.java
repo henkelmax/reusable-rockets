@@ -1,24 +1,18 @@
 package de.maxhenkel.rockets.item;
 
 import de.maxhenkel.rockets.Main;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FireworkRocketEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -29,14 +23,14 @@ public class ItemReusableRocket extends Item {
     private final Supplier<Integer> maxUses;
 
     public ItemReusableRocket(String name, Supplier<Integer> maxUses, Supplier<Integer> maxDuration) {
-        super(new Properties().stacksTo(1).tab(ItemGroup.TAB_MISC));
+        super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC));
         this.maxDuration = maxDuration;
         this.maxUses = maxUses;
         setRegistryName(new ResourceLocation(Main.MODID, name));
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             byte duration = getFlightDuration(stack);
@@ -45,12 +39,12 @@ public class ItemReusableRocket extends Item {
                 duration = 1;
             }
             setFlightDuration(stack, duration);
-            player.displayClientMessage(new TranslationTextComponent("message.reusable_rockets.set_flight_duration", duration, maxDuration.get()), true);
+            player.displayClientMessage(new TranslatableComponent("message.reusable_rockets.set_flight_duration", duration, maxDuration.get()), true);
             player.playSound(SoundEvents.STONE_BUTTON_CLICK_OFF, 1F, 1F);
-            return ActionResult.sidedSuccess(player.getItemInHand(hand), world.isClientSide);
+            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide);
         } else if (player.isFallFlying() && getUsesLeft(stack) > 0) {
             if (!Main.SERVER_CONFIG.allowRocketSpamming.get() && isGettingBoosted(player)) {
-                return ActionResult.fail(player.getItemInHand(hand));
+                return InteractionResultHolder.fail(player.getItemInHand(hand));
             }
             if (!world.isClientSide) {
                 int usesLeft = getUsesLeft(stack);
@@ -58,14 +52,14 @@ public class ItemReusableRocket extends Item {
                 world.addFreshEntity(new FireworkRocketEntity(world, createDummyFirework((byte) duration), player));
                 setUsesLeft(stack, Math.max(0, usesLeft - duration));
             }
-            return ActionResult.sidedSuccess(player.getItemInHand(hand), world.isClientSide);
+            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide);
         }
-        return ActionResult.fail(player.getItemInHand(hand));
+        return InteractionResultHolder.fail(player.getItemInHand(hand));
 
     }
 
     protected byte getFlightDuration(ItemStack stack) {
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         if (tag.contains("Duration")) {
             return tag.getByte("Duration");
         }
@@ -73,17 +67,17 @@ public class ItemReusableRocket extends Item {
     }
 
     protected void setFlightDuration(ItemStack stack, byte duration) {
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         tag.putByte("Duration", duration);
     }
 
     public void setUsesLeft(ItemStack stack, int usesLeft) {
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("UsesLeft", usesLeft);
     }
 
     public int getUsesLeft(ItemStack stack) {
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         if (tag.contains("UsesLeft")) {
             return tag.getInt("UsesLeft");
         }
@@ -101,7 +95,7 @@ public class ItemReusableRocket extends Item {
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        return TextFormatting.DARK_RED.getColor();
+        return ChatFormatting.DARK_RED.getColor();
     }
 
     @Override
@@ -115,10 +109,10 @@ public class ItemReusableRocket extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(new TranslationTextComponent("tooltip.reusable_rockets.flight_duration", getFlightDuration(stack), maxDuration.get()).withStyle(TextFormatting.GRAY));
-        tooltip.add(new TranslationTextComponent("tooltip.reusable_rockets.uses", getUsesLeft(stack), maxUses.get()).withStyle(TextFormatting.GRAY));
-        tooltip.add(new TranslationTextComponent("tooltip.reusable_rockets.sneak_to_change").withStyle(TextFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(new TranslatableComponent("tooltip.reusable_rockets.flight_duration", getFlightDuration(stack), maxDuration.get()).withStyle(ChatFormatting.GRAY));
+        tooltip.add(new TranslatableComponent("tooltip.reusable_rockets.uses", getUsesLeft(stack), maxUses.get()).withStyle(ChatFormatting.GRAY));
+        tooltip.add(new TranslatableComponent("tooltip.reusable_rockets.sneak_to_change").withStyle(ChatFormatting.GRAY));
         super.appendHoverText(stack, world, tooltip, flag);
     }
 
@@ -128,14 +122,9 @@ public class ItemReusableRocket extends Item {
         return stack;
     }
 
-    public boolean isGettingBoosted(PlayerEntity player) {
+    public boolean isGettingBoosted(Player player) {
         return player.level.getEntitiesOfClass(FireworkRocketEntity.class, player.getBoundingBox().inflate(2D), rocket -> {
-            LivingEntity entity = null;
-            try {
-                entity = ObfuscationReflectionHelper.getPrivateValue(FireworkRocketEntity.class, rocket, "field_191513_e");
-            } catch (Exception e) {
-            }
-            return entity == player;
+            return rocket.attachedToEntity == player;
         }).stream().findAny().isPresent();
     }
 
