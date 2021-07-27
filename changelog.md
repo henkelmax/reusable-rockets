@@ -1,1 +1,1 @@
-- Updated to official mappings
+- Re added JEI integration

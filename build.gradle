@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.2'
+        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
         classpath group: 'com.github.jengelman.gradle.plugins', name: 'shadow', version: '4.0.4'
     }
 }
@@ -211,12 +211,4 @@ shadowJar {
 
 reobf {
     shadowJar {}
-}
-
-sourceSets {
-    main {
-        java {
-            exclude 'de/maxhenkel/rockets/integration/jei/**'
-        }
-    }
 }
