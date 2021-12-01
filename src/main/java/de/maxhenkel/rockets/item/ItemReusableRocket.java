@@ -89,17 +89,17 @@ public class ItemReusableRocket extends Item {
     }
 
     @Override
-    public double getDurabilityForDisplay(ItemStack stack) {
-        return 1D - Math.max(Math.min((double) getUsesLeft(stack) / maxUses.get().doubleValue(), 1D), 0D);
-    }
-
-    @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
+    public int getBarColor(ItemStack stack) {
         return ChatFormatting.DARK_RED.getColor();
     }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
+        return Math.round(13F - (float) (maxUses.get().doubleValue() - getUsesLeft(stack)) * 13F / maxUses.get().floatValue());
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
         return true;
     }
 
