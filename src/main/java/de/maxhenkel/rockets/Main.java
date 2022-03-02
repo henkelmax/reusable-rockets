@@ -5,7 +5,7 @@ import de.maxhenkel.rockets.item.ItemReusableRocket;
 import de.maxhenkel.rockets.recipe.RefuelRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,10 +33,9 @@ public class Main {
     public static ItemReusableRocket REUSABLE_ROCKET_TIER_2;
     public static ItemReusableRocket REUSABLE_ROCKET_TIER_3;
 
-    public static Tag<Item> ROCKET_FUEL = ItemTags.bind(new ResourceLocation(Main.MODID, "rocket_fuel").toString());
+    public static TagKey<Item> ROCKET_FUEL = ItemTags.create(new ResourceLocation(Main.MODID, "rocket_fuel"));
 
     public Main() {
-
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, this::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(RecipeSerializer.class, this::registerRecipes);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);

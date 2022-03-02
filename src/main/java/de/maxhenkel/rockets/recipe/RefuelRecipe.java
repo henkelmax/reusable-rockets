@@ -139,7 +139,7 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
                     return null;
                 }
                 rocket = stack;
-            } else if (Main.ROCKET_FUEL.contains(stack.getItem())) {
+            } else if (stack.is(Main.ROCKET_FUEL)) {
                 gunpowderSlotIndices.add(i);
             }
         }
