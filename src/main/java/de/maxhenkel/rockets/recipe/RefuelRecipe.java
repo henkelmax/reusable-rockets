@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.IShapedRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +90,7 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Main.CRAFTING_REFUEL;
+        return Main.CRAFTING_REFUEL.get();
     }
 
     @Override
@@ -99,7 +98,7 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
         return RecipeType.CRAFTING;
     }
 
-    public static class RecipeRefuelSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RefuelRecipe> {
+    public static class RecipeRefuelSerializer implements RecipeSerializer<RefuelRecipe> {
 
         public RecipeRefuelSerializer() {
 

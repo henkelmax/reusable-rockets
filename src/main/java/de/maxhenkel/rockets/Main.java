@@ -11,7 +11,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +18,9 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod(Main.MODID)
 public class Main {
@@ -27,17 +29,25 @@ public class Main {
 
     public static ServerConfig SERVER_CONFIG;
 
-    public static RefuelRecipe.RecipeRefuelSerializer CRAFTING_REFUEL;
+    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_REGISTER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Main.MODID);
 
-    public static ItemReusableRocket REUSABLE_ROCKET_TIER_1;
-    public static ItemReusableRocket REUSABLE_ROCKET_TIER_2;
-    public static ItemReusableRocket REUSABLE_ROCKET_TIER_3;
+    public static final RegistryObject<RecipeSerializer<?>> CRAFTING_REFUEL = RECIPE_REGISTER.register("refuel", RefuelRecipe.RecipeRefuelSerializer::new);
+
+    private static final DeferredRegister<Item> ITEM_REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MODID);
+
+    public static final RegistryObject<ItemReusableRocket> REUSABLE_ROCKET_TIER_1 = ITEM_REGISTER.register("reusable_rocket_tier_1", () ->
+            new ItemReusableRocket(SERVER_CONFIG.tier1MaxUses::get, SERVER_CONFIG.tier1MaxDuration::get)
+    );
+    public static final RegistryObject<ItemReusableRocket> REUSABLE_ROCKET_TIER_2 = ITEM_REGISTER.register("reusable_rocket_tier_2", () ->
+            new ItemReusableRocket(SERVER_CONFIG.tier2MaxUses::get, SERVER_CONFIG.tier2MaxDuration::get)
+    );
+    public static final RegistryObject<ItemReusableRocket> REUSABLE_ROCKET_TIER_3 = ITEM_REGISTER.register("reusable_rocket_tier_3", () ->
+            new ItemReusableRocket(SERVER_CONFIG.tier3MaxUses::get, SERVER_CONFIG.tier3MaxDuration::get)
+    );
 
     public static TagKey<Item> ROCKET_FUEL = ItemTags.create(new ResourceLocation(Main.MODID, "rocket_fuel"));
 
     public Main() {
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, this::registerItems);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(RecipeSerializer.class, this::registerRecipes);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
@@ -45,6 +55,9 @@ public class Main {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             clientStart();
         });
+
+        ITEM_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+        RECIPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -61,25 +74,6 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public void clientSetup(FMLClientSetupEvent event) {
 
-    }
-
-    @SubscribeEvent
-    public void registerRecipes(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        CRAFTING_REFUEL = new RefuelRecipe.RecipeRefuelSerializer();
-        CRAFTING_REFUEL.setRegistryName(new ResourceLocation(MODID, "refuel"));
-        event.getRegistry().register(CRAFTING_REFUEL);
-    }
-
-    @SubscribeEvent
-    public void registerItems(RegistryEvent.Register<Item> event) {
-        REUSABLE_ROCKET_TIER_1 = new ItemReusableRocket("reusable_rocket_tier_1", SERVER_CONFIG.tier1MaxUses::get, SERVER_CONFIG.tier1MaxDuration::get);
-        REUSABLE_ROCKET_TIER_2 = new ItemReusableRocket("reusable_rocket_tier_2", SERVER_CONFIG.tier2MaxUses::get, SERVER_CONFIG.tier2MaxDuration::get);
-        REUSABLE_ROCKET_TIER_3 = new ItemReusableRocket("reusable_rocket_tier_3", SERVER_CONFIG.tier3MaxUses::get, SERVER_CONFIG.tier3MaxDuration::get);
-        event.getRegistry().registerAll(
-                REUSABLE_ROCKET_TIER_1,
-                REUSABLE_ROCKET_TIER_2,
-                REUSABLE_ROCKET_TIER_3
-        );
     }
 
 }

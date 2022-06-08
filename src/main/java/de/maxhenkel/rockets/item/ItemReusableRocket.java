@@ -4,8 +4,6 @@ import de.maxhenkel.rockets.Main;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -22,11 +20,10 @@ public class ItemReusableRocket extends Item {
     private final Supplier<Integer> maxDuration;
     private final Supplier<Integer> maxUses;
 
-    public ItemReusableRocket(String name, Supplier<Integer> maxUses, Supplier<Integer> maxDuration) {
+    public ItemReusableRocket(Supplier<Integer> maxUses, Supplier<Integer> maxDuration) {
         super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC));
         this.maxDuration = maxDuration;
         this.maxUses = maxUses;
-        setRegistryName(new ResourceLocation(Main.MODID, name));
     }
 
     @Override
@@ -39,7 +36,7 @@ public class ItemReusableRocket extends Item {
                 duration = 1;
             }
             setFlightDuration(stack, duration);
-            player.displayClientMessage(new TranslatableComponent("message.reusable_rockets.set_flight_duration", duration, maxDuration.get()), true);
+            player.displayClientMessage(Component.translatable("message.reusable_rockets.set_flight_duration", duration, maxDuration.get()), true);
             player.playSound(SoundEvents.STONE_BUTTON_CLICK_OFF, 1F, 1F);
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide);
         } else if (player.isFallFlying() && getUsesLeft(stack) > 0) {
@@ -110,9 +107,9 @@ public class ItemReusableRocket extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(new TranslatableComponent("tooltip.reusable_rockets.flight_duration", getFlightDuration(stack), maxDuration.get()).withStyle(ChatFormatting.GRAY));
-        tooltip.add(new TranslatableComponent("tooltip.reusable_rockets.uses", getUsesLeft(stack), maxUses.get()).withStyle(ChatFormatting.GRAY));
-        tooltip.add(new TranslatableComponent("tooltip.reusable_rockets.sneak_to_change").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.reusable_rockets.flight_duration", getFlightDuration(stack), maxDuration.get()).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.reusable_rockets.uses", getUsesLeft(stack), maxUses.get()).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.reusable_rockets.sneak_to_change").withStyle(ChatFormatting.GRAY));
         super.appendHoverText(stack, world, tooltip, flag);
     }
 
