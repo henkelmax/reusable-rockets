@@ -80,6 +80,8 @@ dependencies {
 //    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api")
 //    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
 
+    implementation fg.deobf("curse.maven:jei-238222:3834070")
+
     shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
@@ -164,8 +166,13 @@ repositories {
         name = "henkelmax.public"
         url = 'https://maven.maxhenkel.de/repository/public'
     }
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
-
 
 javadoc {
     failOnError = false
@@ -213,12 +220,4 @@ shadowJar {
 
 reobf {
     shadowJar {}
-}
-
-sourceSets {
-    main {
-        java {
-            exclude 'de/maxhenkel/rockets/integration/*/**'
-        }
-    }
 }
