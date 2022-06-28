@@ -1,3 +1,5 @@
+<!-- modrinth_exclude.start -->
+
 # Reusable Rockets ![](http://cf.way2muchnoise.eu/full_414249_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/414249.svg)
 
 ## Links
@@ -7,6 +9,8 @@
 - [FAQ](https://modrepo.de/minecraft/reusable_rockets/faq)
 
 ---
+
+<!-- modrinth_exclude.end -->
 
 This mod adds three tiers of reusable rockets.
 
