@@ -28,7 +28,7 @@ idea {
 }
 
 version = mod_version
-group= mod_packagename
+group = mod_packagename
 archivesBaseName = mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -78,10 +78,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     minecraft "net.minecraftforge:forge:${mod_minecraft_version}-${forge_version}"
 
-//    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api")
-//    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
-
-    compileOnly fg.deobf("curse.maven:jei-238222:3903068")
+    compileOnly fg.deobf("curse.maven:jei-238222:${jei_id}")
 
     shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
