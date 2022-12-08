@@ -98,6 +98,11 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
         return RecipeType.CRAFTING;
     }
 
+    @Override
+    public CraftingBookCategory category() {
+        return CraftingBookCategory.MISC;
+    }
+
     public static class RecipeRefuelSerializer implements RecipeSerializer<RefuelRecipe> {
 
         public RecipeRefuelSerializer() {
