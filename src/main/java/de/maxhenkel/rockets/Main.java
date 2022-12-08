@@ -1,6 +1,7 @@
 package de.maxhenkel.rockets;
 
 import de.maxhenkel.corelib.CommonRegistry;
+import de.maxhenkel.rockets.events.CreativeTabEvents;
 import de.maxhenkel.rockets.item.ItemReusableRocket;
 import de.maxhenkel.rockets.recipe.RefuelRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,7 @@ public class Main {
 
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeTabEvents::onCreativeModeTabBuildContents);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
 

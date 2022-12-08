@@ -21,7 +21,7 @@ public class ItemReusableRocket extends Item {
     private final Supplier<Integer> maxUses;
 
     public ItemReusableRocket(Supplier<Integer> maxUses, Supplier<Integer> maxDuration) {
-        super(new Properties().stacksTo(1)/*.tab(CreativeModeTab.TAB_MISC)*/); // TODO Fix creative tab
+        super(new Properties().stacksTo(1));
         this.maxDuration = maxDuration;
         this.maxUses = maxUses;
     }
