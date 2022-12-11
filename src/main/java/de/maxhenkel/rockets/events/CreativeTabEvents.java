@@ -11,11 +11,9 @@ public class CreativeTabEvents {
     @SubscribeEvent
     public static void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
         if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.register((flags, builder, hasPermissions) -> {
-                builder.accept(new ItemStack(Main.REUSABLE_ROCKET_TIER_1.get()));
-                builder.accept(new ItemStack(Main.REUSABLE_ROCKET_TIER_2.get()));
-                builder.accept(new ItemStack(Main.REUSABLE_ROCKET_TIER_3.get()));
-            });
+            event.accept(new ItemStack(Main.REUSABLE_ROCKET_TIER_1.get()));
+            event.accept(new ItemStack(Main.REUSABLE_ROCKET_TIER_2.get()));
+            event.accept(new ItemStack(Main.REUSABLE_ROCKET_TIER_3.get()));
         }
     }
 
