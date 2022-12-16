@@ -4,9 +4,7 @@
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/reusable-rockets)
-- [ModRepo](https://modrepo.de/minecraft/reusable_rockets/overview)
 - [GitHub](https://github.com/henkelmax/reusable-rockets)
-- [FAQ](https://modrepo.de/minecraft/reusable_rockets/faq)
 
 ---
 
