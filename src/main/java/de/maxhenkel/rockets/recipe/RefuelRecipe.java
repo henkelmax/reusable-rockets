@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.maxhenkel.rockets.Main;
 import de.maxhenkel.rockets.item.ItemReusableRocket;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -57,7 +58,7 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
         CraftingResult craft = craft(inv);
         if (craft == null) {
             return null;
@@ -71,7 +72,7 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
         return rocket;
     }
 
@@ -178,7 +179,6 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
                 reAddCount--;
             }
         }
-
 
         r.setUsesLeft(rocketOut, usesLeft + count);
 

@@ -32,12 +32,12 @@ public class RefuelExtension<T extends RefuelRecipe> implements ICraftingCategor
         rocket.setUsesLeft(out1, Math.min(rocket.getUsesLeft(in) + 8, rocket.getMaxUses()));
 
         List<ItemStack> fuels = Arrays.asList(recipe.getFuel().getItems());
-        craftingGridHelper.setInputs(builder, VanillaTypes.ITEM_STACK, Arrays.asList(
+        craftingGridHelper.createAndSetInputs(builder, VanillaTypes.ITEM_STACK, Arrays.asList(
                 fuels, fuels, fuels,
                 fuels, List.of(in), fuels,
                 fuels, fuels, fuels
         ), 0, 0);
-        craftingGridHelper.setOutputs(builder, VanillaTypes.ITEM_STACK, List.of(out1));
+        craftingGridHelper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, List.of(out1));
     }
 
 }
