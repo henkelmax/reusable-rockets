@@ -120,7 +120,7 @@ public class ItemReusableRocket extends Item {
     }
 
     public boolean isGettingBoosted(Player player) {
-        return player.level.getEntitiesOfClass(FireworkRocketEntity.class, player.getBoundingBox().inflate(2D), rocket -> {
+        return player.level().getEntitiesOfClass(FireworkRocketEntity.class, player.getBoundingBox().inflate(2D), rocket -> {
             return rocket.attachedToEntity == player;
         }).stream().findAny().isPresent();
     }
