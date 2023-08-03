@@ -1,8 +1,9 @@
 <!-- modrinth_exclude.start -->
 
-# Reusable Rockets ![](http://cf.way2muchnoise.eu/full_414249_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/414249.svg)
+# Reusable Rockets
 
 ## Links
+- [Modrinth](https://modrinth.com/mod/reusable-rockets)
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/reusable-rockets)
 - [GitHub](https://github.com/henkelmax/reusable-rockets)
 

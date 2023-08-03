@@ -1,1 +1,2 @@
-- Updated to 1.20.1
+- Added JEI to mods.toml
+- Switch to NeoGradle

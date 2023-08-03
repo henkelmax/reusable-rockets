@@ -22,3 +22,9 @@ description='''Reusable Rockets'''
     versionRange="[${mod_minecraft_version}]"
     ordering="NONE"
     side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="jei"
+    mandatory=false
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
