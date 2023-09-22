@@ -1,29 +1,29 @@
 package de.maxhenkel.rockets.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.maxhenkel.rockets.Main;
 import de.maxhenkel.rockets.item.ItemReusableRocket;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingContainer> {
 
-    private ResourceLocation id;
     private ItemStack rocket;
     private Ingredient fuel;
 
-    public RefuelRecipe(ResourceLocation id, ItemStack rocket, Ingredient fuel) {
-        this.id = id;
+    public RefuelRecipe(ItemStack rocket, Ingredient fuel) {
         this.rocket = rocket;
         this.fuel = fuel;
     }
@@ -76,11 +76,6 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
         return rocket;
     }
 
-    @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
     public ItemStack getRocket() {
         return rocket;
     }
@@ -106,23 +101,32 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
 
     public static class RecipeRefuelSerializer implements RecipeSerializer<RefuelRecipe> {
 
+        private Codec<RefuelRecipe> codec;
+
         public RecipeRefuelSerializer() {
-
+            codec = RecordCodecBuilder.create((builder) -> builder
+                    .group(
+                            BuiltInRegistries.ITEM.byNameCodec().xmap(ItemStack::new, ItemStack::getItem)
+                                    .fieldOf("rocket")
+                                    .forGetter((recipe) -> recipe.rocket),
+                            Ingredient.CODEC_NONEMPTY
+                                    .fieldOf("fuel")
+                                    .forGetter((recipe) -> recipe.fuel)
+                    ).apply(builder, RefuelRecipe::new));
         }
 
         @Override
-        public RefuelRecipe fromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
-            return new RefuelRecipe(resourceLocation, ShapedRecipe.itemStackFromJson(jsonObject.getAsJsonObject("rocket")), Ingredient.fromJson(jsonObject.getAsJsonObject("fuel")));
+        public Codec<RefuelRecipe> codec() {
+            return codec;
         }
 
         @Override
-        public RefuelRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf packetBuffer) {
-            return new RefuelRecipe(packetBuffer.readResourceLocation(), packetBuffer.readItem(), Ingredient.fromNetwork(packetBuffer));
+        public @Nullable RefuelRecipe fromNetwork(FriendlyByteBuf packetBuffer) {
+            return new RefuelRecipe(packetBuffer.readItem(), Ingredient.fromNetwork(packetBuffer));
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf packetBuffer, RefuelRecipe recipe) {
-            packetBuffer.writeResourceLocation(recipe.getId());
             packetBuffer.writeItem(recipe.rocket);
             recipe.fuel.toNetwork(packetBuffer);
         }
