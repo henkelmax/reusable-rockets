@@ -1,19 +1,19 @@
 package de.maxhenkel.rockets;
 
 import de.maxhenkel.corelib.config.ConfigBase;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ServerConfig extends ConfigBase {
 
-    public final ForgeConfigSpec.BooleanValue allowRocketSpamming;
-    public final ForgeConfigSpec.IntValue tier1MaxDuration;
-    public final ForgeConfigSpec.IntValue tier1MaxUses;
-    public final ForgeConfigSpec.IntValue tier2MaxDuration;
-    public final ForgeConfigSpec.IntValue tier2MaxUses;
-    public final ForgeConfigSpec.IntValue tier3MaxDuration;
-    public final ForgeConfigSpec.IntValue tier3MaxUses;
+    public final ModConfigSpec.BooleanValue allowRocketSpamming;
+    public final ModConfigSpec.IntValue tier1MaxDuration;
+    public final ModConfigSpec.IntValue tier1MaxUses;
+    public final ModConfigSpec.IntValue tier2MaxDuration;
+    public final ModConfigSpec.IntValue tier2MaxUses;
+    public final ModConfigSpec.IntValue tier3MaxDuration;
+    public final ModConfigSpec.IntValue tier3MaxUses;
 
-    public ServerConfig(ForgeConfigSpec.Builder builder) {
+    public ServerConfig(ModConfigSpec.Builder builder) {
         super(builder);
         allowRocketSpamming = builder.comment("If the rocket can be used while already getting boosted").define("allow_rocket_spamming", false);
         tier1MaxDuration = builder.defineInRange("rocket.tier_1.max_duration", 2, 1, Integer.MAX_VALUE);
