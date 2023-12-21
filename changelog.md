@@ -1,2 +1,1 @@
-- Added JEI to mods.toml
-- Switch to NeoGradle
+- Added mod icon
