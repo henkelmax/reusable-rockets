@@ -4,11 +4,9 @@ import de.maxhenkel.rockets.Main;
 import de.maxhenkel.rockets.recipe.RefuelRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.recipe.category.extensions.IExtendableRecipeCategory;
-import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
+import mezz.jei.api.recipe.category.extensions.vanilla.crafting.IExtendableCraftingRecipeCategory;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -20,8 +18,8 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
-        IExtendableRecipeCategory<CraftingRecipe, ICraftingCategoryExtension> craftingCategory = registration.getCraftingCategory();
-        craftingCategory.addCategoryExtension(RefuelRecipe.class, RefuelExtension::new);
+        IExtendableCraftingRecipeCategory craftingCategory = registration.getCraftingCategory();
+        craftingCategory.addExtension(RefuelRecipe.class, new RefuelExtension<>());
     }
 
 }

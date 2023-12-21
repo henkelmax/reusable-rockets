@@ -8,20 +8,16 @@ import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class RefuelExtension<T extends RefuelRecipe> implements ICraftingCategoryExtension {
-
-    private final T recipe;
-
-    public RefuelExtension(T recipe) {
-        this.recipe = recipe;
-    }
+public class RefuelExtension<T extends RefuelRecipe> implements ICraftingCategoryExtension<T> {
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
+    public void setRecipe(RecipeHolder<T> recipeHolder, IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
+        T recipe = recipeHolder.value();
         ItemStack in = recipe.getRocket().copy();
         if (!(in.getItem() instanceof ItemReusableRocket rocket)) {
             return;
@@ -39,5 +35,4 @@ public class RefuelExtension<T extends RefuelRecipe> implements ICraftingCategor
         ), 0, 0);
         craftingGridHelper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, List.of(out1));
     }
-
 }
