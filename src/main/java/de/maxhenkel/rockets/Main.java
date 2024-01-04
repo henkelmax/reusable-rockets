@@ -10,9 +10,9 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -41,13 +41,13 @@ public class Main {
 
     public static TagKey<Item> ROCKET_FUEL = ItemTags.create(new ResourceLocation(Main.MODID, "rocket_fuel"));
 
-    public Main() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeTabEvents::onCreativeModeTabBuildContents);
+    public Main(IEventBus eventBus) {
+        eventBus.addListener(CreativeTabEvents::onCreativeModeTabBuildContents);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
 
-        ITEM_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-        RECIPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEM_REGISTER.register(eventBus);
+        RECIPE_REGISTER.register(eventBus);
     }
 
 }
