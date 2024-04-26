@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "reusable_rockets:reusable_rocket_tier_2",
+    "id": "reusable_rockets:reusable_rocket_tier_2",
     "count": 1
   }
 }

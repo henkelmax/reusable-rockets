@@ -1,19 +1,19 @@
 package de.maxhenkel.rockets.recipe;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.maxhenkel.rockets.Main;
 import de.maxhenkel.rockets.item.ItemReusableRocket;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.IShapedRecipe;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +29,12 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
     }
 
     @Override
-    public int getRecipeWidth() {
+    public int getWidth() {
         return 1;
     }
 
     @Override
-    public int getRecipeHeight() {
+    public int getHeight() {
         return 1;
     }
 
@@ -58,7 +58,7 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider) {
         CraftingResult craft = craft(inv);
         if (craft == null) {
             return null;
@@ -72,7 +72,7 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
         return rocket;
     }
 
@@ -101,34 +101,35 @@ public class RefuelRecipe implements CraftingRecipe, IShapedRecipe<CraftingConta
 
     public static class RecipeRefuelSerializer implements RecipeSerializer<RefuelRecipe> {
 
-        private Codec<RefuelRecipe> codec;
+        private static final MapCodec<RefuelRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
+                BuiltInRegistries.ITEM.byNameCodec().xmap(ItemStack::new, ItemStack::getItem)
+                        .fieldOf("rocket")
+                        .forGetter((recipe) -> recipe.rocket),
+                Ingredient.CODEC_NONEMPTY
+                        .fieldOf("fuel")
+                        .forGetter((recipe) -> recipe.fuel)
+        ).apply(builder, RefuelRecipe::new));
+
+        private static final StreamCodec<RegistryFriendlyByteBuf, RefuelRecipe> STREAM_CODEC = StreamCodec.composite(
+                ItemStack.STREAM_CODEC,
+                RefuelRecipe::getRocket,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                RefuelRecipe::getFuel,
+                RefuelRecipe::new
+        );
 
         public RecipeRefuelSerializer() {
-            codec = RecordCodecBuilder.create((builder) -> builder
-                    .group(
-                            BuiltInRegistries.ITEM.byNameCodec().xmap(ItemStack::new, ItemStack::getItem)
-                                    .fieldOf("rocket")
-                                    .forGetter((recipe) -> recipe.rocket),
-                            Ingredient.CODEC_NONEMPTY
-                                    .fieldOf("fuel")
-                                    .forGetter((recipe) -> recipe.fuel)
-                    ).apply(builder, RefuelRecipe::new));
+
         }
 
         @Override
-        public Codec<RefuelRecipe> codec() {
-            return codec;
+        public MapCodec<RefuelRecipe> codec() {
+            return CODEC;
         }
 
         @Override
-        public @Nullable RefuelRecipe fromNetwork(FriendlyByteBuf packetBuffer) {
-            return new RefuelRecipe(packetBuffer.readItem(), Ingredient.fromNetwork(packetBuffer));
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf packetBuffer, RefuelRecipe recipe) {
-            packetBuffer.writeItem(recipe.rocket);
-            recipe.fuel.toNetwork(packetBuffer);
+        public StreamCodec<RegistryFriendlyByteBuf, RefuelRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
     }
 
