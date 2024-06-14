@@ -13,7 +13,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(Main.MODID, "reusable_rockets");
+        return ResourceLocation.fromNamespaceAndPath(Main.MODID, "reusable_rockets");
     }
 
     @Override

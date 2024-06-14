@@ -41,7 +41,7 @@ public class Main {
             new ItemReusableRocket(SERVER_CONFIG.tier3MaxUses::get, SERVER_CONFIG.tier3MaxDuration::get)
     );
 
-    public static TagKey<Item> ROCKET_FUEL = ItemTags.create(new ResourceLocation(Main.MODID, "rocket_fuel"));
+    public static TagKey<Item> ROCKET_FUEL = ItemTags.create(ResourceLocation.fromNamespaceAndPath(Main.MODID, "rocket_fuel"));
 
     private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTER = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE, Main.MODID);
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RocketData>> ROCKET_DATA_COMPONENT = DATA_COMPONENT_TYPE_REGISTER.register("rocket", () -> DataComponentType.<RocketData>builder().persistent(RocketData.CODEC).networkSynchronized(RocketData.STREAM_CODEC).build());
