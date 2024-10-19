@@ -7,6 +7,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -27,7 +28,7 @@ public class RefuelExtension<T extends RefuelRecipe> implements ICraftingCategor
         ItemStack out1 = in.copy();
         rocket.setUsesLeft(out1, Math.min(rocket.getUsesLeft(in) + 8, rocket.getMaxUses()));
 
-        List<ItemStack> fuels = Arrays.asList(recipe.getFuel().getItems());
+        List<ItemStack> fuels = recipe.getFuel().getValues().stream().map(Holder::value).map(ItemStack::new).toList();
         craftingGridHelper.createAndSetInputs(builder, VanillaTypes.ITEM_STACK, Arrays.asList(
                 fuels, fuels, fuels,
                 fuels, List.of(in), fuels,

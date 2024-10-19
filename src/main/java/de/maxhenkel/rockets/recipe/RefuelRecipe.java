@@ -28,11 +28,6 @@ public class RefuelRecipe extends CustomRecipe {
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.of(Ingredient.EMPTY, Ingredient.of(rocket), fuel);
-    }
-
-    @Override
     public boolean matches(CraftingInput inv, Level worldIn) {
         return craft(inv) != null;
     }
@@ -55,16 +50,6 @@ public class RefuelRecipe extends CustomRecipe {
         return craft.result;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width > 1 && height > 1;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return rocket;
-    }
-
     public ItemStack getRocket() {
         return rocket;
     }
@@ -73,14 +58,10 @@ public class RefuelRecipe extends CustomRecipe {
         return fuel;
     }
 
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return Main.CRAFTING_REFUEL.get();
-    }
 
     @Override
-    public RecipeType<?> getType() {
-        return RecipeType.CRAFTING;
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
+        return Main.CRAFTING_REFUEL.get();
     }
 
     @Override
@@ -94,7 +75,7 @@ public class RefuelRecipe extends CustomRecipe {
                 BuiltInRegistries.ITEM.byNameCodec().xmap(ItemStack::new, ItemStack::getItem)
                         .fieldOf("rocket")
                         .forGetter((recipe) -> recipe.rocket),
-                Ingredient.CODEC_NONEMPTY
+                Ingredient.CODEC
                         .fieldOf("fuel")
                         .forGetter((recipe) -> recipe.fuel)
         ).apply(builder, RefuelRecipe::new));

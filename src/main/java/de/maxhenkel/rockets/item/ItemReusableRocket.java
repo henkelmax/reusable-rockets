@@ -6,7 +6,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.*;
@@ -22,8 +22,8 @@ public class ItemReusableRocket extends Item {
     private final Supplier<Integer> maxDuration;
     private final Supplier<Integer> maxUses;
 
-    public ItemReusableRocket(Supplier<Integer> maxUses, Supplier<Integer> maxDuration) {
-        super(new Properties().stacksTo(1));
+    public ItemReusableRocket(Properties properties, Supplier<Integer> maxUses, Supplier<Integer> maxDuration) {
+        super(properties.stacksTo(1));
         this.maxDuration = maxDuration;
         this.maxUses = maxUses;
     }
@@ -45,7 +45,7 @@ public class ItemReusableRocket extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             byte duration = getFlightDuration(stack);
@@ -56,10 +56,10 @@ public class ItemReusableRocket extends Item {
             setFlightDuration(stack, duration);
             player.displayClientMessage(Component.translatable("message.reusable_rockets.set_flight_duration", duration, maxDuration.get()), true);
             player.playSound(SoundEvents.STONE_BUTTON_CLICK_OFF, 1F, 1F);
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide);
+            return InteractionResult.SUCCESS;
         } else if (player.isFallFlying() && getUsesLeft(stack) > 0) {
             if (!Main.SERVER_CONFIG.allowRocketSpamming.get() && isGettingBoosted(player)) {
-                return InteractionResultHolder.fail(player.getItemInHand(hand));
+                return InteractionResult.FAIL;
             }
             if (!world.isClientSide) {
                 int usesLeft = getUsesLeft(stack);
@@ -67,9 +67,9 @@ public class ItemReusableRocket extends Item {
                 world.addFreshEntity(new FireworkRocketEntity(world, createDummyFirework((byte) duration), player));
                 setUsesLeft(stack, Math.max(0, usesLeft - duration));
             }
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide);
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResultHolder.fail(player.getItemInHand(hand));
+        return InteractionResult.FAIL;
 
     }
 
@@ -117,7 +117,7 @@ public class ItemReusableRocket extends Item {
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack) {
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
         return false;
     }
 
