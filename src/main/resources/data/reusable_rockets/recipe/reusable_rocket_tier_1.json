@@ -6,15 +6,9 @@
     "PGP"
   ],
   "key": {
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "P": {
-      "item": "minecraft:paper"
-    },
-    "G": {
-      "item": "minecraft:gunpowder"
-    }
+    "I": "#c:ingots/iron",
+    "P": "minecraft:paper",
+    "G": "minecraft:gunpowder"
   },
   "result": {
     "id": "reusable_rockets:reusable_rocket_tier_1",
