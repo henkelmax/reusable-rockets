@@ -1,0 +1,6 @@
+{
+    "model": {
+        "type": "minecraft:model",
+        "model": "reusable_rockets:item/reusable_rocket_tier_1"
+    }
+}
