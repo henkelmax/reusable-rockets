@@ -11,10 +11,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ItemReusableRocket extends Item {
@@ -122,11 +123,11 @@ public class ItemReusableRocket extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.reusable_rockets.flight_duration", getFlightDuration(stack), maxDuration.get()).withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltip.reusable_rockets.uses", getUsesLeft(stack), maxUses.get()).withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltip.reusable_rockets.sneak_to_change").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(stack, context, tooltip, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag flag) {
+        consumer.accept(Component.translatable("tooltip.reusable_rockets.flight_duration", getFlightDuration(stack), maxDuration.get()).withStyle(ChatFormatting.GRAY));
+        consumer.accept(Component.translatable("tooltip.reusable_rockets.uses", getUsesLeft(stack), maxUses.get()).withStyle(ChatFormatting.GRAY));
+        consumer.accept(Component.translatable("tooltip.reusable_rockets.sneak_to_change").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, context, tooltipDisplay, consumer, flag);
     }
 
     protected ItemStack createDummyFirework(byte flightDuration) {
