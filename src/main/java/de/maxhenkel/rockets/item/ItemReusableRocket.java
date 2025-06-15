@@ -2,6 +2,7 @@ package de.maxhenkel.rockets.item;
 
 import de.maxhenkel.rockets.Main;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 
 import java.util.Collections;
@@ -118,7 +120,7 @@ public class ItemReusableRocket extends Item {
     }
 
     @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         return false;
     }
 
