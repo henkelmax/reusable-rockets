@@ -19,18 +19,18 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod(Main.MODID)
-public class Main {
+@Mod(ReusableRocketsMod.MODID)
+public class ReusableRocketsMod {
 
     public static final String MODID = "reusable_rockets";
 
     public static ServerConfig SERVER_CONFIG;
 
-    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_REGISTER = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Main.MODID);
+    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_REGISTER = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, ReusableRocketsMod.MODID);
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<? extends CustomRecipe>> CRAFTING_REFUEL = RECIPE_REGISTER.register("refuel", RefuelRecipe.RecipeRefuelSerializer::new);
 
-    private static final DeferredRegister.Items ITEM_REGISTER = DeferredRegister.createItems(Main.MODID);
+    private static final DeferredRegister.Items ITEM_REGISTER = DeferredRegister.createItems(ReusableRocketsMod.MODID);
 
     public static final DeferredHolder<Item, ItemReusableRocket> REUSABLE_ROCKET_TIER_1 = ITEM_REGISTER.registerItem("reusable_rocket_tier_1", p ->
             new ItemReusableRocket(p, SERVER_CONFIG.tier1MaxUses::get, SERVER_CONFIG.tier1MaxDuration::get)
@@ -42,12 +42,12 @@ public class Main {
             new ItemReusableRocket(p, SERVER_CONFIG.tier3MaxUses::get, SERVER_CONFIG.tier3MaxDuration::get)
     );
 
-    public static TagKey<Item> ROCKET_FUEL = ItemTags.create(ResourceLocation.fromNamespaceAndPath(Main.MODID, "rocket_fuel"));
+    public static TagKey<Item> ROCKET_FUEL = ItemTags.create(ResourceLocation.fromNamespaceAndPath(ReusableRocketsMod.MODID, "rocket_fuel"));
 
-    private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTER = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE, Main.MODID);
+    private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTER = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE, ReusableRocketsMod.MODID);
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RocketData>> ROCKET_DATA_COMPONENT = DATA_COMPONENT_TYPE_REGISTER.register("rocket", () -> DataComponentType.<RocketData>builder().persistent(RocketData.CODEC).networkSynchronized(RocketData.STREAM_CODEC).build());
 
-    public Main(IEventBus eventBus) {
+    public ReusableRocketsMod(IEventBus eventBus) {
         eventBus.addListener(CreativeTabEvents::onCreativeModeTabBuildContents);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SERVER, ServerConfig.class);

@@ -2,7 +2,7 @@ package de.maxhenkel.rockets.recipe;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.maxhenkel.rockets.Main;
+import de.maxhenkel.rockets.ReusableRocketsMod;
 import de.maxhenkel.rockets.item.ItemReusableRocket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -61,7 +61,7 @@ public class RefuelRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-        return Main.CRAFTING_REFUEL.get();
+        return ReusableRocketsMod.CRAFTING_REFUEL.get();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class RefuelRecipe extends CustomRecipe {
                     return null;
                 }
                 rocket = stack;
-            } else if (stack.is(Main.ROCKET_FUEL)) {
+            } else if (stack.is(ReusableRocketsMod.ROCKET_FUEL)) {
                 gunpowderSlotIndices.add(i);
             }
         }

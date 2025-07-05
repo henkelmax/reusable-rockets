@@ -1,6 +1,6 @@
 package de.maxhenkel.rockets.integration.jei;
 
-import de.maxhenkel.rockets.Main;
+import de.maxhenkel.rockets.ReusableRocketsMod;
 import de.maxhenkel.rockets.recipe.RefuelRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -13,7 +13,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(Main.MODID, "reusable_rockets");
+        return ResourceLocation.fromNamespaceAndPath(ReusableRocketsMod.MODID, "reusable_rockets");
     }
 
     @Override

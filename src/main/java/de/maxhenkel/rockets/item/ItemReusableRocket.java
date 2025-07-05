@@ -1,6 +1,6 @@
 package de.maxhenkel.rockets.item;
 
-import de.maxhenkel.rockets.Main;
+import de.maxhenkel.rockets.ReusableRocketsMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -39,10 +39,10 @@ public class ItemReusableRocket extends Item {
         if (!(stack.getItem() instanceof ItemReusableRocket)) {
             throw new IllegalArgumentException("Not a reusable rocket");
         }
-        RocketData rocketData = stack.get(Main.ROCKET_DATA_COMPONENT);
+        RocketData rocketData = stack.get(ReusableRocketsMod.ROCKET_DATA_COMPONENT);
         if (rocketData == null) {
             rocketData = createDefaultRocketData();
-            stack.set(Main.ROCKET_DATA_COMPONENT, rocketData);
+            stack.set(ReusableRocketsMod.ROCKET_DATA_COMPONENT, rocketData);
         }
         return rocketData;
     }
@@ -61,7 +61,7 @@ public class ItemReusableRocket extends Item {
             player.playSound(SoundEvents.STONE_BUTTON_CLICK_OFF, 1F, 1F);
             return InteractionResult.SUCCESS;
         } else if (player.isFallFlying() && getUsesLeft(stack) > 0) {
-            if (!Main.SERVER_CONFIG.allowRocketSpamming.get() && isGettingBoosted(player)) {
+            if (!ReusableRocketsMod.SERVER_CONFIG.allowRocketSpamming.get() && isGettingBoosted(player)) {
                 return InteractionResult.FAIL;
             }
             if (!world.isClientSide) {
@@ -81,19 +81,19 @@ public class ItemReusableRocket extends Item {
     }
 
     protected void setFlightDuration(ItemStack stack, byte duration) {
-        RocketData rocketData = stack.get(Main.ROCKET_DATA_COMPONENT);
+        RocketData rocketData = stack.get(ReusableRocketsMod.ROCKET_DATA_COMPONENT);
         if (rocketData == null) {
             rocketData = createDefaultRocketData();
         }
-        stack.set(Main.ROCKET_DATA_COMPONENT, new RocketData(duration, rocketData.getUsesLeft()));
+        stack.set(ReusableRocketsMod.ROCKET_DATA_COMPONENT, new RocketData(duration, rocketData.getUsesLeft()));
     }
 
     public void setUsesLeft(ItemStack stack, int usesLeft) {
-        RocketData rocketData = stack.get(Main.ROCKET_DATA_COMPONENT);
+        RocketData rocketData = stack.get(ReusableRocketsMod.ROCKET_DATA_COMPONENT);
         if (rocketData == null) {
             rocketData = createDefaultRocketData();
         }
-        stack.set(Main.ROCKET_DATA_COMPONENT, new RocketData(rocketData.getFlightDuration(), usesLeft));
+        stack.set(ReusableRocketsMod.ROCKET_DATA_COMPONENT, new RocketData(rocketData.getFlightDuration(), usesLeft));
     }
 
     public int getUsesLeft(ItemStack stack) {
